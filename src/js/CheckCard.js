@@ -2,38 +2,11 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion, faSpinner, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
+import { CHECKING, PENDING, VALID, INVALID } from './Constants';
 
-const CHECKING = 1;
-const VALID = 2;
-const INVALID = 3;
-const PENDING = 4;
-
-function determineType(props) {
-  let { checking, valid, invalid } = props;
-
-  // Pending
-  if (checking == false && valid == false && invalid == false) {
-    return PENDING;
-  }
-
-  // Checking
-  if (checking == true && valid == false && invalid == false) {
-    return CHECKING;
-  }
-
-  // Valid
-  if (checking == false && valid == true && invalid == false) {
-    return VALID;
-  }
-
-  // Invalid
-  if (checking == false && valid == false && invalid == true) {
-    return INVALID;
-  }
-}
 
 function IconBox(props) {
-  let currentType = determineType(props);
+  let currentType = props.state;
 
   let classes = classNames({
     'w-1/4': true,
@@ -75,7 +48,7 @@ function IconBox(props) {
 }
 
 function StatusBox(props) {
-  let currentType = determineType(props);
+  let currentType = props.state;
 
   let classes = classNames({
     'w-3/4': true,
@@ -89,7 +62,7 @@ function StatusBox(props) {
 
   return (
     <div className={classes}>
-      CheckCard!
+      {props.message}
     </div>
   )
 }
