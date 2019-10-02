@@ -96,7 +96,7 @@ function StatusBox(props) {
 
 function CheckCard(props) {
   return (
-    <div className="rounded overflow-hidden shadow-lg border border-gray-500 flex my-2">
+    <div className="rounded overflow-hidden shadow-lg border border-gray-500 flex my-4">
       <IconBox {...props} />
       <StatusBox {...props} />
     </div>
