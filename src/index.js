@@ -21,35 +21,57 @@ class App extends React.Component {
     }
   }
 
-  checkSite(stateVar) {
+  checkSite(stateVar, url) {
     console.log(stateVar)
     this.setState({ [stateVar]: CHECKING });
     sleep(750).then(
-      this.setState({ [stateVar]: VALID })
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        }
+      }).then((response) => {
+        console.log(url)
+        console.dir(response)
+        if (response.ok) {
+          this.setState({ [stateVar]: VALID })
+        }
+        else {
+          this.setState({ [stateVar]: INVALID })
+        }
+      }).catch(() => {
+        this.setState({ [stateVar]: INVALID })
+      })
     )
   }
 
   componentDidMount() {
+    console.log('=== Starting Checks ===')
+
     // First
     setTimeout(() => {
-      console.log("First")
-      this.checkSite('connection')
+      console.log("- First Check")
+      this.setState({ connection: CHECKING })
+      sleep(750).then(() => {
+        if (window && window.navigator.onLine) {
+          this.setState({ connection: VALID })
+        }
+        else {
+          this.setState({ connection: INVALID })
+        }
+      })
     }, 1000);
+
     // Second
     setTimeout(() => {
-      console.log("Second")
-      this.checkSite('pypi')
+      console.log("- Second Check")
+      this.checkSite('pypi', 'https://pypi.org/pypi/requests/json')
     }, 2000);
     // Third
     setTimeout(() => {
-      console.log("Third")
-      this.checkSite('npm')
+      console.log("- Third Check")
+      this.checkSite('npm', 'https://api.npmjs.org/downloads/point/last-day')
     }, 3000);
-    // Fourth
-    setTimeout(() => {
-      console.log("Fourth")
-      this.checkSite('docker')
-    }, 4000);
   }
 
   render() {
@@ -60,7 +82,6 @@ class App extends React.Component {
           <CheckCard state={this.state.connection} message="Internet Connection" />
           <CheckCard state={this.state.pypi} message="Python Packages - pypi.org" />
           <CheckCard state={this.state.npm} message="Javascript Packages - npmjs.org" />
-          <CheckCard state={this.state.docker} message="Docker Images - dockerhub.org" />
         </div>
       </div>
     );
